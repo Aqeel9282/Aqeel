@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Photo Editor Master</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-camera"></i> AI Photo Editor Master</h1>
+        
+        <!-- Error Display -->
+        <div id="error-alert" class="error-alert hidden">
+            <span id="error-message"></span>
+            <button id="close-error"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <button class="tab-btn active" data-tab="editor-tab" accesskey="e"><i class="fas fa-edit"></i> Editor (Alt+E)</button>
+            <button class="tab-btn" data-tab="generator-tab" accesskey="g"><i class="fas fa-robot"></i> AI Generator (Alt+G)</button>
+        </div>
+        
+        <!-- Editor Tab -->
+        <div id="editor-tab" class="tab-content active">
+            <div class="upload-section">
+                <input type="file" id="upload" accept="image/*" hidden>
+                <label for="upload" class="upload-btn" accesskey="u">
+                    <i class="fas fa-cloud-upload-alt"></i> Choose Photo (Alt+U)
+                </label>
+                <span id="file-name">No file selected</span>
+            </div>
+            
+            <div class="image-container">
+                <canvas id="canvas"></canvas>
+                <div class="placeholder-text">
+                    <i class="fas fa-image"></i>
+                    <p>Your edited photo will appear here</p>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button id="remove-watermark" accesskey="w"><i class="fas fa-eraser"></i> Remove Watermark (Alt+W)</button>
+                <button id="remove-bg" accesskey="b"><i class="fas fa-cut"></i> Remove BG (Alt+B)</button>
+                <button id="reset" accesskey="r"><i class="fas fa-undo"></i> Reset (Alt+R)</button>
+                <button id="download" accesskey="d"><i class="fas fa-download"></i> Download (Alt+D)</button>
+            </div>
+            
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="filter-search" placeholder="Search filters..." accesskey="f">
+            </div>
+            
+            <div class="filters" id="filters-container">
+                <!-- Filters will be loaded by JavaScript -->
+            </div>
+        </div>
+        
+        <!-- AI Generator Tab -->
+        <div id="generator-tab" class="tab-content">
+            <div class="ai-generator">
+                <div class="prompt-box">
+                    <textarea id="ai-prompt" placeholder="Describe the image you want to generate..." accesskey="p"></textarea>
+                    <button id="generate-btn" accesskey="enter"><i class="fas fa-magic"></i> Generate Image (Enter)</button>
+                </div>
+                <div class="generated-images" id="generated-images">
+                    <!-- Generated images will appear here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script>
+        // Keyboard Shortcuts Handler
+        document.addEventListener('keydown', function(e) {
+            // Alt+Key combinations
+            if (e.altKey) {
+                switch(e.key.toLowerCase()) {
+                    case 'e': document.querySelector('[data-tab="editor-tab"]').click(); break;
+                    case 'g': document.querySelector('[data-tab="generator-tab"]').click(); break;
+                    case 'u': document.getElementById('upload').click(); break;
+                    case 'w': document.getElementById('remove-watermark').click(); break;
+                    case 'b': document.getElementById('remove-bg').click(); break;
+                    case 'r': document.getElementById('reset').click(); break;
+                    case 'd': document.getElementById('download').click(); break;
+                    case 'f': document.getElementById('filter-search').focus(); break;
+                    case 'p': document.getElementById('ai-prompt').focus(); break;
+                }
+            }
+            
+            // Enter key for generation
+            if (e.key === 'Enter' && document.activeElement.id === 'ai-prompt') {
+                e.preventDefault();
+                document.getElementById('generate-btn').click();
+            }
+        });
+
+        // Error Handling System
+        function showError(message) {
+            const errorAlert = document.getElementById('error-alert');
+            document.getElementById('error-message').textContent = message;
+            errorAlert.classList.remove('hidden');
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                errorAlert.classList.add('hidden');
+            }, 5000);
+        }
+
+        document.getElementById('close-error').addEventListener('click', function() {
+            document.getElementById('error-alert').classList.add('hidden');
+        });
+
+        // Make error function available globally
+        window.showError = showError;
+    </script>
+</body>
+</html>
